@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:C:/Users/Jordan Guaman/OneDrive/Desktop/PROYECTO P3 LETA/study-platform/server/dev.db"
+}
+
+model Student {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  group     String   // "EXPERIMENTAL" or "CONTROL"
+  createdAt DateTime @default(now())
+  attempts  Attempt[]
+}
+
+model Task {
+  id            String   @id @default(uuid())
+  title         String
+  description   String
+  type          String   // "LOW_CODE" or "HIGH_CODE"
+  durationLimit Int      // in minutes
+  createdAt     DateTime @default(now())
+  attempts      Attempt[]
+}
+
+model Attempt {
+  id             String   @id @default(uuid())
+  student        Student  @relation(fields: [studentId], references: [id])
+  studentId      String
+  task           Task     @relation(fields: [taskId], references: [id])
+  taskId         String
+  startTime      DateTime @default(now())
+  endTime        DateTime?
+  codeSubmission String?
+  qualityScore   Int?     // 0-100
+  createdAt      DateTime @default(now())
+}
